@@ -1,4 +1,9 @@
-﻿# 이 파일에 게임 스크립트를 입력합니다.
+﻿#Debug
+init python:
+    import random
+#EndDebug
+
+# 이 파일에 게임 스크립트를 입력합니다.
 
 # image 문을 사용해 이미지를 정의합니다.
 # image eileen happy = "eileen_happy.png"
@@ -27,7 +32,44 @@ default 옷차림 = ""
 
 # 화면에 점수 출력
 screen score_display():
-    text "Score: [score]" align (0.98, 0.02)  # 오른쪽 상단에 점수를 표시        
+    text "Score: [score]" align (0.98, 0.02)  # 오른쪽 상단에 점수를 표시   
+
+#Debug-----------------------------------------------------------------------------
+
+label debug:
+    "timeout_label is None"
+    return
+
+default timeout_time = 5.0
+
+screen debug_TimerScreen(timeout_label=None):
+    default pass_time = 5.0
+    timer 0.1 repeat True action SetScreenVariable("pass_time", pass_time - 0.1)
+
+    bar:
+        xalign 0.5
+        ypos 100
+        xsize 740
+        value AnimatedValue(old_value=0.0, value=pass_time, range=timeout_time)  
+
+    if (timeout_label is not None):
+        if (2.0 < pass_time):
+            text "[pass_time:.1f]s" xpos 0.1 ypos 0.1
+        elif (0.0 < pass_time):
+            text "{color=#FF0000}{b}[pass_time:.1f]s{/b}{/color}" xpos 0.1 ypos 0.1
+        else:
+            $ pass_time = timeout_time
+            timer 0.01 action Jump(timeout_label)
+    else:
+        timer 0.01 action Jump(label_none)
+
+#EndDebug----------------------------------------------------------------------------  
+
+# 점수변동 구현완료
+# 타이머 구현완료
+# 캐릭터 이름 입력 구현완료
+# 선택지 구현완료
+# 엔딩 미구현
 
 # 여기에서부터 게임이 시작합니다.
 label start:
@@ -35,9 +77,10 @@ label start:
     # 점수 표시 화면을 항상 띄움
     show screen score_display
 
-    "시작 전 안내사항 (대화창을 클릭할 시 다음으로 넘어갑니다.)"
+    "시작 전 안내사항 (대화창을 클릭하거나 Enter를 누를 시 다음으로 넘어갑니다.)"
     "플레이어가 선택하는 것에 따라 최종 점수 및 결과가 달라집니다."
     "진행 중 현재 점수는 우측 상단의 Score에서 확인할 수 있습니다."
+    "중간에 나오는 선택지는 상하 방향키 + Enter 혹은 마우스로 선택 가능합니다."
     "대화창 클릭 후 기다리시면 곧 게임을 시작합니다."
     scene black with dissolve
 
@@ -202,102 +245,138 @@ menu:
                 me "(묘하게 합리적이다...)"
                 e "이제 물어볼게!"
 
-# 현재 점수변동 구현 중입니다.
+#Debug-------------------------------------------------------------------------------------------------------------
+show screen debug_TimerScreen(random.choice(["club", "libr", "hof", "cafe"]))
+#EndDebug----------------------------------------------------------------------------------------------------------
 
 menu:
     "어떤 장소로 갈까?"
-    
+
     "클럽":
+        label club:
+        hide screen debug_TimerScreen
         $ 장소 = "클럽"
         e "그래! 가끔은 클럽에 가서 신나게 춤추다 오는 것도 좋지!"
+
+        #Debug-------------------------------------------------------------------------------------------------------------
+        show screen debug_TimerScreen(random.choice(["fam", "fri", "lov", "pub"]))
+        #EndDebug----------------------------------------------------------------------------------------------------------
 
         menu:
             "어떤 사람과 함께 갈까?"
 
             "가족":
+                label club_fam:
+                hide screen debug_TimerScreen
                 $ 대상 = "가족"
                 e "가족...이랑 클럽을 간다고? 뭐, 그럴 수 있지..." # 0점
                 $ score += 0
                 "점수에 변동이 없습니다."
-            
 
             "친구":
+                label club_fri:
+                hide screen debug_TimerScreen
                 $ 대상 = "친구"
                 e "좋아, 당장 친구한테 같이 가자고 연락해 봐야지!" # +3점
                 $ score += 3
                 "점수가 3점 올랐습니다."
-                
 
             "연인":
+                label club_lov:
+                hide screen debug_TimerScreen
                 $ 대상 = "연인"
                 e "으음... 말 꺼내면 큰일날 것 같은데. 그래, 같이 가서 즐겁게 놀다 오자고 해야지!" # 0점
                 $ score += 0
                 "점수에 변동이 없습니다."
-                
 
             "공적관계":
+                label club_pub:
+                hide screen debug_TimerScreen
                 $ 대상 = "공적관계"
                 e "뭐?" with vpunch
                 e "...좋은 생각은 아닌 것 같아, 생각해보자... 교수님이랑 클럽...? 으음." # -3점
                 $ score -= 3
                 "점수가 3점 내려갔습니다."
-       
+
         "현재 점수는 [score]점 입니다."
-        # 필요한 다른 동작들 추가 가능
+
+        #Debug-------------------------------------------------------------------------------------------------------------
+        show screen debug_TimerScreen(random.choice(["sunny", "cloudy", "rain", "snow"]))
+        #EndDebug----------------------------------------------------------------------------------------------------------
 
         menu:
             "오늘 날씨가 어떻지?"
 
             "맑음":
+                label club_sunny:
+                hide screen debug_TimerScreen
                 e "날이 엄청 맑아! 햇빛도 좋고, 놀러가기 딱 좋은 날씨네." # +3점
                 $ score += 3
                 "점수가 3점 올랐습니다."
 
-            "흐림" :
+            "흐림":
+                label club_cloudy:
+                hide screen debug_TimerScreen
                 e "날이 조금 흐리긴 한데, 딱히 비나 눈이 올 것 같진 않아." # 0점
-                "점수가 0점 올랐습니다."
                 "점수에 변동이 없습니다."
 
-            "비" :
+            "비":
+                label club_rain:
+                hide screen debug_TimerScreen
                 e "모처럼 오랜만에 놀러가는데 하필이면 비가 오네." #-1점
                 $ score -= 1
                 "점수가 1점 내려갔습니다."
 
-            "눈" :
+            "눈":
+                label club_snow:
+                hide screen debug_TimerScreen
                 e "엥! 벌써 눈이 온다고? 지구가 망하긴 했구나." #-1점
                 $ score -= 1
                 "점수가 1점 내려갔습니다."
 
-        "현재 점수는 [score]점 입니다."           
-                
-        
+        "현재 점수는 [score]점 입니다."
 
+    # 도서관
     "도서관":
+        label libr:
+        hide screen debug_TimerScreen
         $ 장소 = "도서관"
         e "오! 도서관에서 공부도 하고, 책도 읽으면 좋겠다."
+
+        #Debug-------------------------------------------------------------------------------------------------------------
+        show screen debug_TimerScreen(random.choice(["fam", "fri", "lov", "pub"]))
+        #EndDebug----------------------------------------------------------------------------------------------------------
 
         menu:
             "어떤 사람과 함께 갈까?"
 
-            "가족" :
+            "가족":
+                label lib_fam:
+                hide screen debug_TimerScreen
                 $ 대상 = "가족"
                 e "가족이랑 도서관이라! 시간이 맞으려나." # 0점
                 $ score += 0
                 "점수에 변동이 없습니다."
 
-            "친구" :
+            "친구":
+                label lib_fri:
+                hide screen debug_TimerScreen
                 $ 대상 = "친구"
                 e "전공 공부 같이 하자고 연락해 봐야겠다." # +3점
                 $ score += 3
                 "점수가 3점 올랐습니다."
 
-            "연인" :
+            "연인":
+                label lib_lov:
+                hide screen debug_TimerScreen
                 $ 대상 = "연인"
                 e "도서관 데이트 너무 좋지~" # 0점
                 $ score += 0
                 "점수에 변동이 없습니다."
 
-            "공적관계" :
+            "공적관계":
+                label lib_pub:
+                hide screen debug_TimerScreen
                 $ 대상 = "공적관계"
                 e "모여서 팀플을 하는 것도 좋겠다." # +3점
                 $ score += 3
@@ -305,57 +384,84 @@ menu:
 
         "현재 점수는 [score]점 입니다."
 
+        #Debug-------------------------------------------------------------------------------------------------------------
+        show screen debug_TimerScreen(random.choice(["sunny", "cloudy", "rain", "snow"]))
+        #EndDebug----------------------------------------------------------------------------------------------------------
+
         menu:
             "오늘 날씨가 어떻지?"
 
-            "맑음" :
+            "맑음":
+                label lib_sunny:
+                hide screen debug_TimerScreen
                 e "날이 엄청 맑아! 햇빛도 좋고, 따사롭게 공부에 집중할 수 있는 환경이겠다." # +3점
                 $ score += 3
                 "점수가 3점 올랐습니다."
 
-            "흐림" :
+            "흐림":
+                label lib_cloudy:
+                hide screen debug_TimerScreen
                 e "날이 조금 흐리긴 한데, 딱히 비나 눈이 올 것 같진 않아." # 0점
                 $ score += 0
                 "점수에 변동이 없습니다."
-            "비" :
+
+            "비":
+                label lib_rain:
+                hide screen debug_TimerScreen
                 e "모처럼 오랜만에 도서관에 가는데 비가 오네. 흐리고 눅눅해서 별론데." # -1점
                 $ score -= 1
                 "점수가 1점 내려갔습니다."
-            "눈" :
-                e "엥! 벌써 눈이 온다고? 지구가 망하긴 했구나." #-1점
+
+            "눈":
+                label lib_snow:
+                hide screen debug_TimerScreen
+                e "엥! 벌써 눈이 온다고? 지구가 망하긴 했구나." # -1점
                 $ score -= 1
                 "점수가 1점 내려갔습니다."
 
         "현재 점수는 [score]점 입니다."
 
-        
-
+    # 술집
     "술집":
+        label hof:
+        hide screen debug_TimerScreen
         $ 장소 = "술집"
         e "술 한 잔 하면서 피로를 푸는 것도 좋은 선택인 것 같아."
+
+        #Debug-------------------------------------------------------------------------------------------------------------
+        show screen debug_TimerScreen(random.choice(["fam", "fri", "lov", "pub"]))
+        #EndDebug----------------------------------------------------------------------------------------------------------
 
         menu:
             "어떤 사람과 함께 갈까?"
 
-            "가족" :
+            "가족":
+                label pub_fam:
+                hide screen debug_TimerScreen
                 $ 대상 = "가족"
                 e "가족이 다 같이 모여서 술 한 잔 하는 것도 좋지. 아 나 근데 우리 아빠 감당 안 되는데..." # 0점
                 $ score += 0
                 "점수에 변동이 없습니다."
 
-            "친구" :
+            "친구":
+                label pub_fri:
+                hide screen debug_TimerScreen
                 $ 대상 = "친구"
                 e "아 친구들 불러서 술 마시자고 할까? 너무 좋아! 완전 달리는 거야!" # +3점
                 $ score += 3
                 "점수기 3점 올랐습니다."
-                
-            "연인" :
+
+            "연인":
+                label pub_lov:
+                hide screen debug_TimerScreen
                 $ 대상 = "연인"
                 e "둘이서 느긋하게 얘기하면서 술 한 잔 하자고 해야지!" # +1점
                 $ score += 1
                 "점수가 1점 올랐습니다."
 
-            "공적관계" :
+            "공적관계":
+                label pub_pub:
+                hide screen debug_TimerScreen
                 $ 대상 = "공적관계"
                 e "으악, 회식같아. 별로야." # -3점
                 $ score -= 3
@@ -363,59 +469,83 @@ menu:
 
         "현재 점수는 [score]점 입니다."
 
+        #Debug-------------------------------------------------------------------------------------------------------------
+        show screen debug_TimerScreen(random.choice(["sunny", "cloudy", "rain", "snow"]))
+        #EndDebug----------------------------------------------------------------------------------------------------------
+
         menu:
             "오늘 날씨가 어떻지?"
 
-            "맑음" :
+            "맑음":
+                label pub_sunny:
+                hide screen debug_TimerScreen
                 e "날 되게 좋다! 기분이 좋아." # +3점
                 $ score += 3
                 "점수기 3점 올랐습니다."
 
-            "흐림" :
-                e "흐리면 또 흐린 맛이 있지!" # +3점
-                $ score += 3
-                "점수기 3점 올랐습니다."
+            "흐림":
+                label pub_cloudy:
+                hide screen debug_TimerScreen
+                e "날이 좀 흐려서 다운되는데, 뭐 크게 상관없을 거 같아." # 0점
+                "점수에 변동이 없습니다."
 
-            "비" :
-                e "비오는 날에는 파전에 막걸리?" # +3점
-                $ score += 3
-                "점수기 3점 올랐습니다."
+            "비":
+                label pub_rain:
+                hide screen debug_TimerScreen
+                e "술집 가는 길에 비 맞아도 기분 별로일 것 같은데." # -1점
+                $ score -= 1
+                "점수가 1점 내려갔습니다."
 
-            "눈" :
-                e "지구가 망했나? 괜찮아, 어묵탕 먹으면 되지. 오히려 좋아." # +3점
-                $ score += 3
-                "점수기 3점 올랐습니다."
+            "눈":
+                label pub_snow:
+                hide screen debug_TimerScreen
+                e "눈 맞으면서 가는 술집이라... 분위기는 좋은데 너무 추울 거야." # -1점
+                $ score -= 1
+                "점수가 1점 내려갔습니다."
 
         "현재 점수는 [score]점 입니다."
-
         
 
     "카페":
+        label cafe:
+        hide screen debug_TimerScreen
         $ 장소 = "카페"
         e "헉! 수업때문에 테이크아웃은 자주 해봤는데, 매장을 이용하는 건 오랜만이야."
+
+        #Debug-------------------------------------------------------------------------------------------------------------
+        show screen debug_TimerScreen(random.choice(["fam", "fri", "lov", "pub"]))
+        #EndDebug----------------------------------------------------------------------------------------------------------
 
         menu:
             "어떤 사람과 함께 갈까?"
 
             "가족" :
+                label fam:
+                hide screen debug_TimerScreen
                 $ 대상 = "가족"
                 e "학교 다니느라 바빠서 요즘 통 대화를 못했지." # +3점
                 $ score += 3
                 "점수기 3점 올랐습니다."
 
             "친구" :
+                label fri:
+                hide screen debug_TimerScreen
                 $ 대상 = "친구"
                 e "걔네가 카페를 좋아할까?" # -1점
                 $ score -= 1
                 "점수기 1점 내려갔습니다."
 
             "연인" :
+                label lov:
+                hide screen debug_TimerScreen
                 $ 대상 = "연인"
                 e "악, 사진 찍느라 바쁘겠네 또." # 0점
                 $ score += 0
                 "점수에 변동이 없습니다."
 
             "공적관계" :
+                label pub:
+                hide screen debug_TimerScreen
                 $ 대상 = "공적관계"
                 e "하... 이번에는 또 어떤 프로젝트 얘기를 하려나." # -3점
                 $ score -= 3
@@ -423,25 +553,37 @@ menu:
 
         "현재 점수는 [score]점 입니다."
 
+        #Debug-------------------------------------------------------------------------------------------------------------
+        show screen debug_TimerScreen(random.choice(["sunny", "cloudy", "rain", "snow"]))
+        #EndDebug----------------------------------------------------------------------------------------------------------
+
         menu:
             "오늘 날씨가 어떻지?"
 
             "맑음" :
+                label sunny:
+                hide screen debug_TimerScreen
                 e "와! 사진 찍으면 완전 잘 나오겠다." # +3점
                 $ score += 3
                 "점수기 3점 올랐습니다."
 
             "흐림" :
+                label cloudy:
+                hide screen debug_TimerScreen
                 e "날이 흐려서 조명에 의지해야겠네. 약간 축 쳐지는 것 같기도 하고...?" # -1점
                 $ score -= 1
                 "점수기 1점 내려갔습니다."
 
             "비" :
+                label rain:
+                hide screen debug_TimerScreen
                 e "괜찮아, 운치있고 좋다!" # +1점
                 $ score += 1
                 "점수기 1점 올랐습니다."
 
             "눈" :
+                label snow:
+                hide screen debug_TimerScreen
                 e "벌써 눈이 오나? 뭐 어때, 낭만있네!" # +3점
                 $ score += 3
                 "점수기 3점 올랐습니다."
@@ -477,22 +619,34 @@ menu:
     "잠이나 자자" :
         jump bad_ending
 
+#Debug-------------------------------------------------------------------------------------------------------------
+show screen debug_TimerScreen(random.choice(["coat", "hood", "setup", "shirt"]))
+#EndDebug----------------------------------------------------------------------------------------------------------
+
 menu:
     "어떤 걸 입을까?"
 
     "코트에 긴바지" :
+        label coat:
+        hide screen debug_TimerScreen
         e "가을엔 역시 코트지."
         $ 옷차림 = "코트에 긴바지"
 
     "후드티에 츄리닝바지" :
+        label hood:
+        hide screen debug_TimerScreen
         e "편한 게 짱이야."
         $ 옷차림 = "후드티에 츄리닝바지"
 
     "정장 셋업" :
+        label setup:
+        hide screen debug_TimerScreen
         e "오늘은 격식차린 옷을 입어야겠다."
         $ 옷차림 = "정장 셋업"
 
     "셔츠에 청바지" :
+        label shirt:
+        hide screen debug_TimerScreen
         e "심플 이즈 베스트! 가장 무난한 것 같아."
         $ 옷차림 = "셔츠에 청바지"
 
