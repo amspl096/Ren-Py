@@ -69,7 +69,7 @@ screen debug_TimerScreen(timeout_label=None):
 # 타이머 구현완료
 # 캐릭터 이름 입력 구현완료
 # 선택지 구현완료
-# 엔딩 미구현
+# 엔딩 구현완료
 
 # 여기에서부터 게임이 시작합니다.
 label start:
@@ -259,7 +259,7 @@ menu:
         e "그래! 가끔은 클럽에 가서 신나게 춤추다 오는 것도 좋지!"
 
         #Debug-------------------------------------------------------------------------------------------------------------
-        show screen debug_TimerScreen(random.choice(["fam", "fri", "lov", "pub"]))
+        show screen debug_TimerScreen(random.choice(["club_fam", "club_fri", "club_lov", "club_pub"]))
         #EndDebug----------------------------------------------------------------------------------------------------------
 
         menu:
@@ -301,7 +301,7 @@ menu:
         "현재 점수는 [score]점 입니다."
 
         #Debug-------------------------------------------------------------------------------------------------------------
-        show screen debug_TimerScreen(random.choice(["sunny", "cloudy", "rain", "snow"]))
+        show screen debug_TimerScreen(random.choice(["club_sunny", "club_cloudy", "club_rain", "club_snow"]))
         #EndDebug----------------------------------------------------------------------------------------------------------
 
         menu:
@@ -344,7 +344,7 @@ menu:
         e "오! 도서관에서 공부도 하고, 책도 읽으면 좋겠다."
 
         #Debug-------------------------------------------------------------------------------------------------------------
-        show screen debug_TimerScreen(random.choice(["fam", "fri", "lov", "pub"]))
+        show screen debug_TimerScreen(random.choice(["lib_fam", "lib_fri", "lib_lov", "lib_pub"]))
         #EndDebug----------------------------------------------------------------------------------------------------------
 
         menu:
@@ -385,7 +385,7 @@ menu:
         "현재 점수는 [score]점 입니다."
 
         #Debug-------------------------------------------------------------------------------------------------------------
-        show screen debug_TimerScreen(random.choice(["sunny", "cloudy", "rain", "snow"]))
+        show screen debug_TimerScreen(random.choice(["lib_sunny", "lib_cloudy", "lib_rain", "lib_snow"]))
         #EndDebug----------------------------------------------------------------------------------------------------------
 
         menu:
@@ -429,7 +429,7 @@ menu:
         e "술 한 잔 하면서 피로를 푸는 것도 좋은 선택인 것 같아."
 
         #Debug-------------------------------------------------------------------------------------------------------------
-        show screen debug_TimerScreen(random.choice(["fam", "fri", "lov", "pub"]))
+        show screen debug_TimerScreen(random.choice(["pub_fam", "pub_fri", "pub_lov", "pub_pub"]))
         #EndDebug----------------------------------------------------------------------------------------------------------
 
         menu:
@@ -470,7 +470,7 @@ menu:
         "현재 점수는 [score]점 입니다."
 
         #Debug-------------------------------------------------------------------------------------------------------------
-        show screen debug_TimerScreen(random.choice(["sunny", "cloudy", "rain", "snow"]))
+        show screen debug_TimerScreen(random.choice(["pub_sunny", "pub_cloudy", "pub_rain", "pub_snow"]))
         #EndDebug----------------------------------------------------------------------------------------------------------
 
         menu:
@@ -513,14 +513,14 @@ menu:
         e "헉! 수업때문에 테이크아웃은 자주 해봤는데, 매장을 이용하는 건 오랜만이야."
 
         #Debug-------------------------------------------------------------------------------------------------------------
-        show screen debug_TimerScreen(random.choice(["fam", "fri", "lov", "pub"]))
+        show screen debug_TimerScreen(random.choice(["cafe_fam", "cafe_fri", "cafe_lov", "cafe_pub"]))
         #EndDebug----------------------------------------------------------------------------------------------------------
 
         menu:
             "어떤 사람과 함께 갈까?"
 
             "가족" :
-                label fam:
+                label cafe_fam:
                 hide screen debug_TimerScreen
                 $ 대상 = "가족"
                 e "학교 다니느라 바빠서 요즘 통 대화를 못했지." # +3점
@@ -528,7 +528,7 @@ menu:
                 "점수기 3점 올랐습니다."
 
             "친구" :
-                label fri:
+                label cafe_fri:
                 hide screen debug_TimerScreen
                 $ 대상 = "친구"
                 e "걔네가 카페를 좋아할까?" # -1점
@@ -536,7 +536,7 @@ menu:
                 "점수기 1점 내려갔습니다."
 
             "연인" :
-                label lov:
+                label cafe_lov:
                 hide screen debug_TimerScreen
                 $ 대상 = "연인"
                 e "악, 사진 찍느라 바쁘겠네 또." # 0점
@@ -544,7 +544,7 @@ menu:
                 "점수에 변동이 없습니다."
 
             "공적관계" :
-                label pub:
+                label cafe_pub:
                 hide screen debug_TimerScreen
                 $ 대상 = "공적관계"
                 e "하... 이번에는 또 어떤 프로젝트 얘기를 하려나." # -3점
@@ -554,35 +554,35 @@ menu:
         "현재 점수는 [score]점 입니다."
 
         #Debug-------------------------------------------------------------------------------------------------------------
-        show screen debug_TimerScreen(random.choice(["sunny", "cloudy", "rain", "snow"]))
+        show screen debug_TimerScreen(random.choice(["cafe_sunny", "cafe_cloudy", "cafe_rain", "cafe_snow"]))
         #EndDebug----------------------------------------------------------------------------------------------------------
 
         menu:
             "오늘 날씨가 어떻지?"
 
             "맑음" :
-                label sunny:
+                label cafe_sunny:
                 hide screen debug_TimerScreen
                 e "와! 사진 찍으면 완전 잘 나오겠다." # +3점
                 $ score += 3
                 "점수기 3점 올랐습니다."
 
             "흐림" :
-                label cloudy:
+                label cafe_cloudy:
                 hide screen debug_TimerScreen
                 e "날이 흐려서 조명에 의지해야겠네. 약간 축 쳐지는 것 같기도 하고...?" # -1점
                 $ score -= 1
                 "점수기 1점 내려갔습니다."
 
             "비" :
-                label rain:
+                label cafe_rain:
                 hide screen debug_TimerScreen
                 e "괜찮아, 운치있고 좋다!" # +1점
                 $ score += 1
                 "점수기 1점 올랐습니다."
 
             "눈" :
-                label snow:
+                label cafe_snow:
                 hide screen debug_TimerScreen
                 e "벌써 눈이 오나? 뭐 어때, 낭만있네!" # +3점
                 $ score += 3
