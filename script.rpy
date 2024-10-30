@@ -843,8 +843,7 @@ label bad_ending1:
         me "아."
 
         # 화면에 "배드엔딩" 텍스트 중앙에 출력
-        show text "{color=#a0a0a0}BAD ENDING 1 - 수뭉이의 부탁을 들어주지 않았다." at truecenter with dissolve:
-            size 100  # 텍스트 크기 설정
+        show text "{color=#a0a0a0}{size=100}BAD ENDING 1 - 수뭉이의 부탁을 들어주지 않았다.{/size}" at truecenter with dissolve    # 텍스트 크기 및 색상 설정
 
         # 3초 대기 후 게임 종료
         pause 3
@@ -870,19 +869,14 @@ label happy_ending:
         e "진짜 정말 고마워, 슴우야!"
 
         # 화면에 "해피엔딩" 텍스트 중앙에 출력
-        show text "{color=#ffcdcd}HAPPY ENDING - 수뭉이의 코디를 올바르게 잘 도와줬다." at truecenter with dissolve:
-            size 100  # 글자 크기 설정
+        show text "{color=#ffcdcd}{size=100}HAPPY ENDING - 수뭉이의 코디를 올바르게 잘 도와줬다.{/size}" at truecenter with dissolve    # 텍스트 크기 및 색상 설정
 
         # 3초 대기 후 게임 종료
         pause 3
-        return
 
     else:
         # 안 좋은 엔딩
         e "오늘은 조금 아쉬운 하루였어. 선택이 좀 안 맞아서 예상치 못한 결과들이 많았던 것 같아."
         e "다음에는 조금 더 신중히 생각해서 좋은 결과를 만들어보자."
-
+    
     return
-
-    return
-return
