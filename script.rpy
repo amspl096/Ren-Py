@@ -196,7 +196,7 @@ menu:
                 
             "관둬 안 해" :
                 e "힝... 너무해."
-                jump bad_ending1
+                jump bad_ending
     
     "싫어!" :
         e "장난이지?"
@@ -206,7 +206,7 @@ menu:
                 e "다행이다!!! 고마워!"
             "장난 아닌데~ 장난 아닌데~":
                 e "인성이... 왜 그래?"
-                jump bad_ending1
+                jump bad_ending
 
         e "그러며언 있지, 내가 앞으로 3가지를 물어볼 건데, 가장 좋을 것 같은 선택을 해주기만 하면 돼!"
         e "어때! 쉽지?"
@@ -720,7 +720,7 @@ label final_score_check:
                 e "야야, 그래도 이건 너무 차렸잖아."
             else:
                 $ score += 8 # 적합 +8
-                e "이게 띡 좋을 것 같아!"
+                e "이게 딱 좋을 것 같아!"
 
         elif 대상 == "공적관계":
             if 옷차림 == "셔츠에 청바지":
@@ -827,10 +827,14 @@ label final_score_check:
     # 최종 점수 표시
     "최종 점수는 [score]점 입니다."
 
+    if score >= 6:
+        jump happy_ending
+
+    else:
+        jump bad_ending
+
     # 엔딩 분기 설정
-label bad_ending1:
-    if "관둬 안 해":
-        # 시작도 전에 끝나버리는 배드엔딩1
+label bad_ending:
         e "너 진짜 나쁜 아이구나?"
         e "어떻게 그럴 수가 있어? 너무해..."
         me "원래 인생이 그런 거다."
@@ -843,14 +847,13 @@ label bad_ending1:
         me "아."
 
         # 화면에 "배드엔딩" 텍스트 중앙에 출력
-        show text "{color=#a0a0a0}{size=100}BAD ENDING 1 - 수뭉이의 부탁을 들어주지 않았다.{/size}" at truecenter with dissolve    # 텍스트 크기 및 색상 설정
+        show text "{color=#a0a0a0}{size=90}BAD ENDING - 수뭉이의 부탁을 들어주지 않았다.{/size}" at truecenter with dissolve    # 텍스트 크기 및 색상 설정
 
         # 3초 대기 후 게임 종료
         pause 3
         return
 
 label happy_ending:
-    if score >= 6:
         # 해피엔딩
         e "어때? 잘 어울려?"
         menu:
@@ -869,14 +872,9 @@ label happy_ending:
         e "진짜 정말 고마워, 슴우야!"
 
         # 화면에 "해피엔딩" 텍스트 중앙에 출력
-        show text "{color=#ffcdcd}{size=100}HAPPY ENDING - 수뭉이의 코디를 올바르게 잘 도와줬다.{/size}" at truecenter with dissolve    # 텍스트 크기 및 색상 설정
+        show text "{color=#ffcdcd}{size=90}HAPPY ENDING - 수뭉이의 코디를 올바르게 잘 도와줬다.{/size}" at truecenter with dissolve    # 텍스트 크기 및 색상 설정
 
         # 3초 대기 후 게임 종료
         pause 3
-
-    else:
-        # 안 좋은 엔딩
-        e "오늘은 조금 아쉬운 하루였어. 선택이 좀 안 맞아서 예상치 못한 결과들이 많았던 것 같아."
-        e "다음에는 조금 더 신중히 생각해서 좋은 결과를 만들어보자."
-    
-    return
+        return
+return
